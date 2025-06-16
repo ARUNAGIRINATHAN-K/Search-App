@@ -1,0 +1,22 @@
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+}
+input, select, button {
+    margin: 10px 0;
+    padding: 8px;
+}
+button {
+    cursor: pointer;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+}
+#results {
+    margin-top: 20px;
+}
+#canvas-container {
+    margin-top: 20px;
+}
