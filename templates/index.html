@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Simple Search App</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.2/p5.min.js"></script>
+    <script src="/static/sketch.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Simple Search Application</h1>
+        <input type="file" id="fileInput" accept=".txt">
+        <select id="algorithm">
+            <option value="linear">Linear Search</option>
+            <option value="binary">Binary Search</option>
+            <option value="naive">Naive String Matching</option>
+            <option value="kmp">KMP</option>
+            <option value="boyer_moore">Boyer-Moore</option>
+        </select>
+        <input type="text" id="query" placeholder="Enter search query">
+        <button onclick="performSearch()">Search</button>
+        <div id="results"></div>
+        <div id="canvas-container"></div>
+    </div>
+    <script>
+        async function performSearch() {
+            const fileInput = document.getElementById('fileInput');
+            const algorithm = document.getElementById('algorithm').value;
+            const query = document.getElementById('query').value;
+            const resultsDiv = document.getElementById('results');
+
+            if (!fileInput.files[0] || !query) {
+                resultsDiv.innerHTML = '<p>Please upload a file and enter a query.</p>';
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+            formData.append('algorithm', algorithm);
+            formData.append('query', query);
+
+            try {
+                const response = await fetch('/search', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
+                resultsDiv.innerHTML = `
+                    <h3>Results</h3>
+                    <p>Matches: ${data.matches.join(', ') || 'None'}</p>
+                    <p>Execution Time: ${data.time.toFixed(4)} seconds</p>
+                `;
+                window.executionTime = data.time; // Pass to p5.js
+            } catch (error) {
+                resultsDiv.innerHTML = '<p>Error performing search.</p>';
+            }
+        }
+    </script>
+</body>
+</html>
